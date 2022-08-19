@@ -40,6 +40,7 @@ public class HomePage extends JFrame {
 	private JPanel contentPane;
 	public JTable table;
 	public JTable table_1;
+	public JButton btnNewButton;
 	public DefaultTableModel daDefaultTableModel;
 	public DefaultTableModel daDefaultTableModel1;
 	public JLabel textField;
@@ -157,14 +158,14 @@ public class HomePage extends JFrame {
 
 		// save button
 		JButton btnNewButton_2 = new JButton("Save");
-		btnNewButton_2.setBounds(550, 506, 150, 23);
+		btnNewButton_2.setBounds(738, 506, 80, 23);
 		btnNewButton_2.setActionCommand("save");
 		btnNewButton_2.addActionListener(controller);
 		contentPane.add(btnNewButton_2);
 
 		// cancel button
 		JButton btnNewButton_3 = new JButton("Cancel");
-		btnNewButton_3.setBounds(730, 506, 150, 23);
+		btnNewButton_3.setBounds(830, 506, 80, 23);
 		btnNewButton_3.setActionCommand("cancel");
 		btnNewButton_3.addActionListener(controller);
 		contentPane.add(btnNewButton_3);
@@ -181,7 +182,7 @@ public class HomePage extends JFrame {
 		daDefaultTableModel1.setColumnIdentifiers(headerDetais);
 		table_1.setModel(daDefaultTableModel1);
 		JScrollPane scrollPane1 = new JScrollPane(table_1);
-		scrollPane1.setBounds(520, 268, 400, 200);
+		scrollPane1.setBounds(520, 268, 473, 200);
 
 		table_1.setSurrendersFocusOnKeystroke(true);
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -250,6 +251,13 @@ public class HomePage extends JFrame {
 		mb.add(menu);
 		mb.setBounds(0, 0, 1023, 22);
 		contentPane.add(mb);
+		// add invoice item
+		btnNewButton = new JButton("Add");
+		btnNewButton.setBounds(648, 506, 80, 23);
+		btnNewButton.setActionCommand("add");
+		btnNewButton.setEnabled(false);
+		btnNewButton.addActionListener(controller);
+		contentPane.add(btnNewButton);
 	}
 
 	// internal class to handle buttons shape

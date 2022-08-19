@@ -53,9 +53,53 @@ public class InvoiceController implements ActionListener {
 		case "save":
 			saveUpdate();
 			break;
+		case "add":
+			addNewItem();
+			break;
 		default:
 			System.out.println("error");
 		}
+	}
+
+	private void addNewItem() {
+		// invoice details elements
+		JTextField itemName = new JTextField();
+		JTextField itemPrice = new JTextField();
+		JTextField itemCount = new JTextField();
+
+		Object[] invoiceDetailsMessage = { "Item Name:", itemName, "Item Price:", itemPrice, "Item Count", itemCount };
+		int invoiceDetailsOption = JOptionPane.showConfirmDialog(null, invoiceDetailsMessage, "Invoice Details",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (invoiceDetailsOption == JOptionPane.OK_OPTION) {
+			// show new data in invoice details
+			addNewInvoiceDetailsToTable(homePage.textField.getText(), itemName.getText().toString(),
+					itemPrice.getText().toString(), itemCount.getText().toString(),
+					Integer.parseInt(itemPrice.getText().toString())
+							* Integer.parseInt(itemCount.getText().toString()));
+			// add new invoice details to tempInvoice object
+			InvoiceLine invoiceDetail = new InvoiceLine();
+			invoiceDetail.setInvoiceNo(homePage.textField.getText());
+			invoiceDetail.setItemName(itemName.getText().toString());
+			invoiceDetail.setItemPrice(itemPrice.getText().toString());
+			invoiceDetail.setItemCount(itemCount.getText().toString());
+			tempInvoices.add(invoiceDetail);
+			// update total in header table
+			homePage.daDefaultTableModel.setValueAt(updateHeaderRowTotalPrice(homePage.textField.getText().toString()),
+					homePage.table.getSelectedRow(), 3);
+			// update text with new total
+			homePage.textField_3
+					.setText(Integer.toString(updateHeaderRowTotalPrice(homePage.textField.getText().toString())));
+		}
+	}
+
+	private int updateHeaderRowTotalPrice(String invoiceNum) {
+		int total = 0;
+		for (int i = 0; i < tempInvoices.size(); i++) {
+			if (tempInvoices.get(i).getInvoiceNo().equals(invoiceNum))
+				total += (Integer.parseInt(tempInvoices.get(i).getItemPrice())
+						* (Integer.parseInt(tempInvoices.get(i).getItemCount())));
+		}
+		return total;
 	}
 
 	private void saveUpdate() {
@@ -175,7 +219,6 @@ public class InvoiceController implements ActionListener {
 				}
 			}
 		});
-//		invoiceHeaderFile.setFileFilter(new FileFilter(".csv", "Csv File"));
 		int i = invoiceHeaderFile.showOpenDialog(null);
 		if (i == JFileChooser.APPROVE_OPTION) {
 			// open file chooser and select line file
@@ -219,7 +262,7 @@ public class InvoiceController implements ActionListener {
 			homePage.textField_2.setText("");
 			homePage.textField_3.setText("");
 			homePage.daDefaultTableModel1.setRowCount(0);
-			JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
+//			JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
 		}
 	}
 
@@ -239,8 +282,6 @@ public class InvoiceController implements ActionListener {
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 
 			@Override
@@ -251,7 +292,8 @@ public class InvoiceController implements ActionListener {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
+				// enable add item button on row select
+				homePage.btnNewButton.setEnabled(true);
 				if (e.getClickCount() == 1) {
 					JTable target = (JTable) e.getSource();
 					int rowIndex = target.getSelectedRow();
@@ -329,44 +371,44 @@ public class InvoiceController implements ActionListener {
 		JTextField invoiceNo = new JTextField();
 		JTextField invoiceDate = new JTextField();
 		JTextField customerName = new JTextField();
-		// invoice details elements
-		JTextField itemName = new JTextField();
-		JTextField itemPrice = new JTextField();
-		JTextField itemCount = new JTextField();
+//		// invoice details elements
+//		JTextField itemName = new JTextField();
+//		JTextField itemPrice = new JTextField();
+//		JTextField itemCount = new JTextField();
 
 		Object[] message = { "Invoice No:", invoiceNo, "Invoice Date:", invoiceDate, "Customer Name", customerName };
-		Object[] invoiceDetailsMessage = { "Item Name:", itemName, "Item Price:", itemPrice, "Item Count", itemCount };
+//		Object[] invoiceDetailsMessage = { "Item Name:", itemName, "Item Price:", itemPrice, "Item Count", itemCount };
 
 		int option = JOptionPane.showConfirmDialog(null, message, "New Invoice", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.PLAIN_MESSAGE);
 		if (option == JOptionPane.OK_OPTION) {
-			int invoiceDetailsOption = JOptionPane.showConfirmDialog(null, invoiceDetailsMessage, "Invoice Details",
-					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-			if (invoiceDetailsOption == JOptionPane.OK_OPTION) {
-				invoiceDetails = new getInvoiceDetails();
-				// empty right panel data
-				homePage.textField.setText("");
-				homePage.textField_1.setText("");
-				homePage.textField_2.setText("");
-				homePage.textField_3.setText("");
+//			int invoiceDetailsOption = JOptionPane.showConfirmDialog(null, invoiceDetailsMessage, "Invoice Details",
+//					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+//			if (invoiceDetailsOption == JOptionPane.OK_OPTION) {
+//				invoiceDetails = new getInvoiceDetails();
+//				// empty right panel data
+//				homePage.textField.setText("");
+//				homePage.textField_1.setText("");
+//				homePage.textField_2.setText("");
+//				homePage.textField_3.setText("");
 				homePage.daDefaultTableModel1.setRowCount(0);
 				// show new data in invoice details
-				addNewInvoiceDetailsToTable(invoiceNo.getText().toString(), itemName.getText().toString(),
-						itemPrice.getText().toString(), itemCount.getText().toString(),
-						Integer.parseInt(itemPrice.getText().toString())
-								* Integer.parseInt(itemCount.getText().toString()));
+//				addNewInvoiceDetailsToTable(invoiceNo.getText().toString(), itemName.getText().toString(),
+//						itemPrice.getText().toString(), itemCount.getText().toString(),
+//						Integer.parseInt(itemPrice.getText().toString())
+//								* Integer.parseInt(itemCount.getText().toString()));
 				// add new invoice details to tempInvoice object
-				InvoiceLine invoiceDetail = new InvoiceLine();
-				invoiceDetail.setInvoiceNo(invoiceNo.getText().toString());
-				invoiceDetail.setItemName(itemName.getText().toString());
-				invoiceDetail.setItemPrice(itemPrice.getText().toString());
-				invoiceDetail.setItemCount(itemCount.getText().toString());
-				tempInvoices.add(invoiceDetail);
+//				InvoiceLine invoiceDetail = new InvoiceLine();
+//				invoiceDetail.setInvoiceNo(invoiceNo.getText().toString());
+//				invoiceDetail.setItemName(itemName.getText().toString());
+//				invoiceDetail.setItemPrice(itemPrice.getText().toString());
+//				invoiceDetail.setItemCount(itemCount.getText().toString());
+//				tempInvoices.add(invoiceDetail);
 				// data in invoice table
 				addNewInvoiceToTable(invoiceNo.getText().toString(), invoiceDate.getText().toString(),
 						customerName.getText().toString(),
 						calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
-			}
+//			}
 		}
 	}
 
