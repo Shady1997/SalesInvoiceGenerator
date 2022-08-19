@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import model.InvoiceData;
+import model.InvoiceHeader;
 
 public class GetInvoiceData {
 
-	public List<InvoiceData> invoices = new ArrayList<>();
+	public ArrayList<InvoiceHeader> invoices = new ArrayList<>();
 
 	public GetInvoiceData(String path) {
 		getInvoicesDetails(path);
@@ -27,7 +26,7 @@ public class GetInvoiceData {
 			while ((line = br.readLine()) != null) // returns a Boolean value
 			{
 				invoiceDetails = line.split(splitBy); // use comma as separator
-				InvoiceData invoiceData = new InvoiceData();
+				InvoiceHeader invoiceData = new InvoiceHeader();
 				invoiceData.setInvoiceNo(invoiceDetails[0]);
 				invoiceData.setInvoiceDate(invoiceDetails[1]);
 				invoiceData.setCustomerName(invoiceDetails[2]);

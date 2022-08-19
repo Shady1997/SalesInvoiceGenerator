@@ -1,6 +1,6 @@
 package model;
 
-public class InvoiceData {
+public class InvoiceHeader {
 	// invoice elements
 	String invoiceNo;
 

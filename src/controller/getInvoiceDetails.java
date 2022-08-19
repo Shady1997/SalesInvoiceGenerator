@@ -6,19 +6,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.InvoiceDetails;
+import model.InvoiceLine;
 
 public class getInvoiceDetails {
 
-	public List<InvoiceDetails> invoices = new ArrayList<>();
+	public ArrayList<InvoiceLine> invoices = new ArrayList<>();
 	private int detailsTableRow;
-
-	public getInvoiceDetails() {
-	}
 
 	public getInvoiceDetails(int detailsTableRow, String path) {
 		this.detailsTableRow = detailsTableRow;
 		getInvoicesDetails(path);
+	}
+
+	// empty constructor
+	public getInvoiceDetails() {
 	}
 
 	public void getInvoicesDetails(String path) {
@@ -32,7 +33,7 @@ public class getInvoiceDetails {
 			while ((line = br.readLine()) != null) // returns a Boolean value
 			{
 				invoiceDetails = line.split(splitBy); // use comma as separator
-				InvoiceDetails invoiceDetail = new InvoiceDetails();
+				InvoiceLine invoiceDetail = new InvoiceLine();
 				if (Integer.parseInt(invoiceDetails[0]) != detailsTableRow)
 					continue;
 				else {
@@ -48,7 +49,16 @@ public class getInvoiceDetails {
 		}
 	}
 
-	public List<InvoiceDetails> addNewInvoiceDetailsToObject(String invoiceNo, String itemName, String itemPrice,
+	public void addInvoiceDetails(String invoiceNo, String itemName, String itemPrice, String itemCount) {
+		InvoiceLine invoiceDetail = new InvoiceLine();
+		invoiceDetail.setInvoiceNo(invoiceNo);
+		invoiceDetail.setItemName(itemName);
+		invoiceDetail.setItemPrice(itemPrice);
+		invoiceDetail.setItemCount(itemCount);
+		invoices.add(invoiceDetail);
+	}
+
+	public List<InvoiceLine> addNewInvoiceDetailsToObject(String invoiceNo, String itemName, String itemPrice,
 			String itemCount) {
 		// TODO Auto-generated method stub
 		String line = "";
@@ -62,7 +72,7 @@ public class getInvoiceDetails {
 			while ((line = br.readLine()) != null) // returns a Boolean value
 			{
 				invoiceDetails = line.split(splitBy); // use comma as separator
-				InvoiceDetails invoiceDetail = new InvoiceDetails();
+				InvoiceLine invoiceDetail = new InvoiceLine();
 				invoiceDetail.setInvoiceNo(invoiceDetails[0]);
 				invoiceDetail.setItemName(invoiceDetails[1]);
 				invoiceDetail.setItemPrice(invoiceDetails[2]);
@@ -72,7 +82,7 @@ public class getInvoiceDetails {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		InvoiceDetails invoiceDetail = new InvoiceDetails();
+		InvoiceLine invoiceDetail = new InvoiceLine();
 		invoiceDetail.setInvoiceNo(invoiceNo);
 		invoiceDetail.setItemName(itemName);
 		invoiceDetail.setItemPrice(itemPrice);

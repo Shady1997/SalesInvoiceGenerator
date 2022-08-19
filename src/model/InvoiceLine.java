@@ -1,6 +1,6 @@
 package model;
 
-public class InvoiceDetails {
+public class InvoiceLine {
 
 	// invoice details elements
 	String invoiceNo;
