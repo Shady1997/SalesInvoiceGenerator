@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import model.InvoiceHeader;
 
 public class GetInvoiceData {
@@ -33,6 +35,8 @@ public class GetInvoiceData {
 				invoices.add(invoiceData);
 			}
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
 		}
 	}

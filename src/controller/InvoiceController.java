@@ -151,6 +151,7 @@ public class InvoiceController implements ActionListener {
 						fw2.close();
 					}
 				} catch (Exception e) {
+					System.out.println(e.getMessage());
 					JOptionPane.showMessageDialog(null, e.getMessage());
 				}
 			}

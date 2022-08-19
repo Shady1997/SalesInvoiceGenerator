@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import model.InvoiceLine;
 
 public class getInvoiceDetails {
@@ -45,6 +47,8 @@ public class getInvoiceDetails {
 				}
 			}
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -80,6 +84,8 @@ public class getInvoiceDetails {
 				invoices.add(invoiceDetail);
 			}
 		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
 		}
 		InvoiceLine invoiceDetail = new InvoiceLine();

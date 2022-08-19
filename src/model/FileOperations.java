@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 public class FileOperations {
 
 	// create array list for invoice header
@@ -33,6 +35,7 @@ public class FileOperations {
 			e.printStackTrace();
 			// print error message in console
 			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 		// test reading header data from csv file
 		testReadingFromCSV(invoices);
@@ -61,6 +64,7 @@ public class FileOperations {
 			e.printStackTrace();
 			// print error message in console
 			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}
 
