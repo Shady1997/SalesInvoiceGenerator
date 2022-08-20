@@ -262,6 +262,8 @@ public class InvoiceController implements ActionListener {
 			homePage.textField_2.setText("");
 			homePage.textField_3.setText("");
 			homePage.daDefaultTableModel1.setRowCount(0);
+			//disable add item until select header row
+			homePage.btnNewButton.setEnabled(false);
 //			JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
 		}
 	}
@@ -391,24 +393,26 @@ public class InvoiceController implements ActionListener {
 //				homePage.textField_1.setText("");
 //				homePage.textField_2.setText("");
 //				homePage.textField_3.setText("");
-				homePage.daDefaultTableModel1.setRowCount(0);
-				// show new data in invoice details
+			homePage.daDefaultTableModel1.setRowCount(0);
+			// show new data in invoice details
 //				addNewInvoiceDetailsToTable(invoiceNo.getText().toString(), itemName.getText().toString(),
 //						itemPrice.getText().toString(), itemCount.getText().toString(),
 //						Integer.parseInt(itemPrice.getText().toString())
 //								* Integer.parseInt(itemCount.getText().toString()));
-				// add new invoice details to tempInvoice object
+			// add new invoice details to tempInvoice object
 //				InvoiceLine invoiceDetail = new InvoiceLine();
 //				invoiceDetail.setInvoiceNo(invoiceNo.getText().toString());
 //				invoiceDetail.setItemName(itemName.getText().toString());
 //				invoiceDetail.setItemPrice(itemPrice.getText().toString());
 //				invoiceDetail.setItemCount(itemCount.getText().toString());
 //				tempInvoices.add(invoiceDetail);
-				// data in invoice table
-				addNewInvoiceToTable(invoiceNo.getText().toString(), invoiceDate.getText().toString(),
-						customerName.getText().toString(),
-						calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
+			// data in invoice table
+			addNewInvoiceToTable(invoiceNo.getText().toString(), invoiceDate.getText().toString(),
+					customerName.getText().toString(),
+					calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
 //			}
+			//disable add item until select header row
+			homePage.btnNewButton.setEnabled(false);
 		}
 	}
 
