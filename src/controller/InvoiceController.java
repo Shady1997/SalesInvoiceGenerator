@@ -255,16 +255,51 @@ public class InvoiceController implements ActionListener {
 		// TODO Auto-generated method stub
 		// check for selected row first
 		if (homePage.table.getSelectedRow() != -1) {
-			// remove selected row from the model
-			homePage.daDefaultTableModel.removeRow(homePage.table.getSelectedRow());
-			homePage.textField.setText("");
-			homePage.textField_1.setText("");
-			homePage.textField_2.setText("");
-			homePage.textField_3.setText("");
-			homePage.daDefaultTableModel1.setRowCount(0);
-			//disable add item until select header row
-			homePage.btnNewButton.setEnabled(false);
-//			JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
+			if (homePage.table_1.getSelectedRow() == -1) {
+				// remove selected row from the model
+				homePage.daDefaultTableModel.removeRow(homePage.table.getSelectedRow());
+				homePage.textField.setText("");
+				homePage.textField_1.setText("");
+				homePage.textField_2.setText("");
+				homePage.textField_3.setText("");
+				homePage.daDefaultTableModel1.setRowCount(0);
+				// disable add item until select header row
+				homePage.btnNewButton.setEnabled(false);
+			} else {
+				// delete from old loaded data
+				invoiceDetails = new getInvoiceDetails(
+						Integer.parseInt(
+								homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 0).toString()),
+						invoiceDetailsPath);
+				if (invoiceDetails.invoices.size() != 0) {
+					// decrement total value in header table and view
+					homePage.daDefaultTableModel.setValueAt(
+							Integer.parseInt(homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3)
+									.toString())
+									- Integer.parseInt(homePage.daDefaultTableModel1
+											.getValueAt(homePage.table_1.getSelectedRow(), 4).toString()),
+							homePage.table.getSelectedRow(), 3);
+					homePage.textField_3.setText(
+							homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3).toString());
+					// delete row from invoice line table
+					homePage.daDefaultTableModel1.removeRow(homePage.table_1.getSelectedRow());
+				} else {
+					// decrement total value in header table and view
+					homePage.daDefaultTableModel.setValueAt(
+							Integer.parseInt(homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3)
+									.toString())
+									- Integer.parseInt(homePage.daDefaultTableModel1
+											.getValueAt(homePage.table_1.getSelectedRow(), 4).toString()),
+							homePage.table.getSelectedRow(), 3);
+					homePage.textField_3.setText(
+							homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3).toString());
+					// delete invoice item from object
+					tempInvoices.remove(homePage.table_1.getSelectedRow());
+					// delete row from invoice line table
+					homePage.daDefaultTableModel1.removeRow(homePage.table_1.getSelectedRow());
+				}
+
+			}
 		}
 	}
 
@@ -411,7 +446,7 @@ public class InvoiceController implements ActionListener {
 					customerName.getText().toString(),
 					calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
 //			}
-			//disable add item until select header row
+			// disable add item until select header row
 			homePage.btnNewButton.setEnabled(false);
 		}
 	}
