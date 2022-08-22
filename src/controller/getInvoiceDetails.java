@@ -28,10 +28,9 @@ public class getInvoiceDetails {
 		String line = "";
 		String splitBy = ",";
 		String[] invoiceDetails = null;
-		try {
+		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 			// parsing a CSV file into BufferedReader class constructor
-			@SuppressWarnings("resource")
-			BufferedReader br = new BufferedReader(new FileReader(path));
+			
 			while ((line = br.readLine()) != null) // returns a Boolean value
 			{
 				invoiceDetails = line.split(splitBy); // use comma as separator
