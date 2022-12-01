@@ -58,7 +58,11 @@ public class InvoiceController implements ActionListener {
 			saveFile();
 			break;
 		case "cancel":
-			cancelUpdate();
+			try {
+				cancelUpdate();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
 			break;
 		case "save":
 			saveUpdate();
@@ -109,6 +113,11 @@ public class InvoiceController implements ActionListener {
 				total += (Integer.parseInt(tempInvoices.get(i).getItemPrice())
 						* (Integer.parseInt(tempInvoices.get(i).getItemCount())));
 		}
+		if(homePage.table.getSelectedRow()==0 || homePage.table.getSelectedRow()==1)
+		{
+			for(int i=0;i<3;i++)
+				total+=Integer.parseInt(homePage.daDefaultTableModel1.getValueAt(i,4).toString());
+		}
 		return total;
 	}
 
@@ -120,12 +129,13 @@ public class InvoiceController implements ActionListener {
 			}
 	}
 
-	private void cancelUpdate() {
-		homePage.textField.setText("");
-		homePage.textField_1.setText("");
-		homePage.textField_2.setText("");
-		homePage.textField_3.setText("");
-		homePage.daDefaultTableModel1.setRowCount(0);
+	private void cancelUpdate() throws IOException {
+		deleteInvoice();
+//		homePage.textField.setText("");
+//		homePage.textField_1.setText("");
+//		homePage.textField_2.setText("");
+//		homePage.textField_3.setText("");
+//		homePage.daDefaultTableModel1.setRowCount(0);
 	}
 
 	private void saveFile() {
