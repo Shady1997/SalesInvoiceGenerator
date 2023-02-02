@@ -158,14 +158,14 @@ public class HomePage extends JFrame {
 
 		// save button
 		JButton btnNewButton_2 = new JButton("Save");
-		btnNewButton_2.setBounds(738, 506, 80, 23);
+		btnNewButton_2.setBounds(738, 506, 100, 23);
 		btnNewButton_2.setActionCommand("save");
 		btnNewButton_2.addActionListener(controller);
 		contentPane.add(btnNewButton_2);
 
 		// cancel button
-		JButton btnNewButton_3 = new JButton("Cancel");
-		btnNewButton_3.setBounds(830, 506, 80, 23);
+		JButton btnNewButton_3 = new JButton("Delete Item");
+		btnNewButton_3.setBounds(830, 506, 110, 23);
 		btnNewButton_3.setActionCommand("cancel");
 		btnNewButton_3.addActionListener(controller);
 		contentPane.add(btnNewButton_3);
@@ -252,8 +252,8 @@ public class HomePage extends JFrame {
 		mb.setBounds(0, 0, 1023, 22);
 		contentPane.add(mb);
 		// add invoice item
-		btnNewButton = new JButton("Add");
-		btnNewButton.setBounds(648, 506, 80, 23);
+		btnNewButton = new JButton("Add Item");
+		btnNewButton.setBounds(648, 506, 100, 23);
 		btnNewButton.setActionCommand("add");
 		btnNewButton.setEnabled(false);
 		btnNewButton.addActionListener(controller);

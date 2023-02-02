@@ -4,8 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
@@ -23,6 +27,7 @@ public class InvoiceController implements ActionListener {
 	HomePage homePage;
 	GetInvoiceData getData;
 	getInvoiceDetails invoiceDetails;
+	getInvoiceDetails tempInvoiceDetails;
 	public ArrayList<InvoiceLine> tempInvoices = new ArrayList<>();
 	public String invoiceDetailsPath = System.getProperty("user.dir") + "\\resources\\InvoiceLine.csv";
 
@@ -39,7 +44,12 @@ public class InvoiceController implements ActionListener {
 			readInvoiceData();
 			break;
 		case "deleteInvoice":
-			deleteInvoice();
+			try {
+				deleteInvoice();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 		case "loadfile":
 			loadFile();
@@ -48,7 +58,11 @@ public class InvoiceController implements ActionListener {
 			saveFile();
 			break;
 		case "cancel":
-			cancelUpdate();
+			try {
+				cancelUpdate();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
 			break;
 		case "save":
 			saveUpdate();
@@ -99,6 +113,11 @@ public class InvoiceController implements ActionListener {
 				total += (Integer.parseInt(tempInvoices.get(i).getItemPrice())
 						* (Integer.parseInt(tempInvoices.get(i).getItemCount())));
 		}
+		if(homePage.table.getSelectedRow()==0 || homePage.table.getSelectedRow()==1)
+		{
+			for(int i=0;i<3;i++)
+				total+=Integer.parseInt(homePage.daDefaultTableModel1.getValueAt(i,4).toString());
+		}
 		return total;
 	}
 
@@ -110,12 +129,13 @@ public class InvoiceController implements ActionListener {
 			}
 	}
 
-	private void cancelUpdate() {
-		homePage.textField.setText("");
-		homePage.textField_1.setText("");
-		homePage.textField_2.setText("");
-		homePage.textField_3.setText("");
-		homePage.daDefaultTableModel1.setRowCount(0);
+	private void cancelUpdate() throws IOException {
+		deleteInvoice();
+//		homePage.textField.setText("");
+//		homePage.textField_1.setText("");
+//		homePage.textField_2.setText("");
+//		homePage.textField_3.setText("");
+//		homePage.daDefaultTableModel1.setRowCount(0);
 	}
 
 	private void saveFile() {
@@ -251,18 +271,91 @@ public class InvoiceController implements ActionListener {
 		}
 	}
 
-	private void deleteInvoice() {
+	private void deleteInvoice() throws IOException {
 		// TODO Auto-generated method stub
 		// check for selected row first
 		if (homePage.table.getSelectedRow() != -1) {
-			// remove selected row from the model
-			homePage.daDefaultTableModel.removeRow(homePage.table.getSelectedRow());
-			homePage.textField.setText("");
-			homePage.textField_1.setText("");
-			homePage.textField_2.setText("");
-			homePage.textField_3.setText("");
-			homePage.daDefaultTableModel1.setRowCount(0);
-//			JOptionPane.showMessageDialog(null, "Selected row deleted successfully");
+			if (homePage.table_1.getSelectedRow() == -1) {
+				// remove selected row from the model
+				homePage.daDefaultTableModel.removeRow(homePage.table.getSelectedRow());
+				homePage.textField.setText("");
+				homePage.textField_1.setText("");
+				homePage.textField_2.setText("");
+				homePage.textField_3.setText("");
+				homePage.daDefaultTableModel1.setRowCount(0);
+				// disable add item until select header row
+				homePage.btnNewButton.setEnabled(false);
+			} else {
+				// delete from in line file
+				deleteSelectedLineFromCSVFile(homePage.daDefaultTableModel1
+						.getValueAt(homePage.table_1.getSelectedRow(), 0).toString() + ","
+						+ homePage.daDefaultTableModel1.getValueAt(homePage.table_1.getSelectedRow(), 1).toString()
+						+ ","
+						+ homePage.daDefaultTableModel1.getValueAt(homePage.table_1.getSelectedRow(), 2).toString()
+						+ ","
+						+ homePage.daDefaultTableModel1.getValueAt(homePage.table_1.getSelectedRow(), 3).toString());
+//				invoiceDetails.invoices.remove(homePage.table_1.getSelectedRow());
+				invoiceDetails = new getInvoiceDetails(
+						Integer.parseInt(
+								homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 0).toString()),
+						invoiceDetailsPath);
+				if (invoiceDetails.invoices.size() != 0) {
+					// decrement total value in header table and view
+					homePage.daDefaultTableModel.setValueAt(
+							Integer.parseInt(homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3)
+									.toString())
+									- Integer.parseInt(homePage.daDefaultTableModel1
+											.getValueAt(homePage.table_1.getSelectedRow(), 4).toString()),
+							homePage.table.getSelectedRow(), 3);
+					homePage.textField_3.setText(
+							homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3).toString());
+					// delete row from invoice line table
+					homePage.daDefaultTableModel1.removeRow(homePage.table_1.getSelectedRow());
+				} else {
+					// decrement total value in header table and view
+					homePage.daDefaultTableModel.setValueAt(
+							Integer.parseInt(homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3)
+									.toString())
+									- Integer.parseInt(homePage.daDefaultTableModel1
+											.getValueAt(homePage.table_1.getSelectedRow(), 4).toString()),
+							homePage.table.getSelectedRow(), 3);
+					homePage.textField_3.setText(
+							homePage.daDefaultTableModel.getValueAt(homePage.table.getSelectedRow(), 3).toString());
+					// delete invoice item from object
+					tempInvoices.remove(homePage.table_1.getSelectedRow());
+					// delete row from invoice line table
+					homePage.daDefaultTableModel1.removeRow(homePage.table_1.getSelectedRow());
+				}
+
+			}
+		}
+	}
+
+	private void deleteSelectedLineFromCSVFile(String lineData) throws IOException {
+		File inputFile = new File(invoiceDetailsPath);
+		File tempFile = new File(System.getProperty("user.dir") + "\\resources\\" + "tempInvoiceDetails.csv");
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+				BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+
+			String lineToRemove = lineData;
+			String currentLine;
+
+			while ((currentLine = reader.readLine()) != null) {
+				// trim newline when comparing with lineToRemove
+				String trimmedLine = currentLine.trim();
+				if (trimmedLine.equals(lineToRemove))
+					continue;
+				writer.write(currentLine + System.getProperty("line.separator"));
+			}
+		}
+
+		// rename file to file2 name
+		boolean success = new File(invoiceDetailsPath).delete();
+		if (success && tempFile.renameTo(inputFile)) {
+			System.out.println(inputFile.getName() + " is renamed and deleted!");
+		} else {
+			System.out.println("operation is failed.");
 		}
 	}
 
@@ -391,24 +484,26 @@ public class InvoiceController implements ActionListener {
 //				homePage.textField_1.setText("");
 //				homePage.textField_2.setText("");
 //				homePage.textField_3.setText("");
-				homePage.daDefaultTableModel1.setRowCount(0);
-				// show new data in invoice details
+			homePage.daDefaultTableModel1.setRowCount(0);
+			// show new data in invoice details
 //				addNewInvoiceDetailsToTable(invoiceNo.getText().toString(), itemName.getText().toString(),
 //						itemPrice.getText().toString(), itemCount.getText().toString(),
 //						Integer.parseInt(itemPrice.getText().toString())
 //								* Integer.parseInt(itemCount.getText().toString()));
-				// add new invoice details to tempInvoice object
+			// add new invoice details to tempInvoice object
 //				InvoiceLine invoiceDetail = new InvoiceLine();
 //				invoiceDetail.setInvoiceNo(invoiceNo.getText().toString());
 //				invoiceDetail.setItemName(itemName.getText().toString());
 //				invoiceDetail.setItemPrice(itemPrice.getText().toString());
 //				invoiceDetail.setItemCount(itemCount.getText().toString());
 //				tempInvoices.add(invoiceDetail);
-				// data in invoice table
-				addNewInvoiceToTable(invoiceNo.getText().toString(), invoiceDate.getText().toString(),
-						customerName.getText().toString(),
-						calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
+			// data in invoice table
+			addNewInvoiceToTable(invoiceNo.getText().toString(), invoiceDate.getText().toString(),
+					customerName.getText().toString(),
+					calculateRowTotal(Integer.parseInt(invoiceNo.getText().toString())));
 //			}
+			// disable add item until select header row
+			homePage.btnNewButton.setEnabled(false);
 		}
 	}
 
